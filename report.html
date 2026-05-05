@@ -1,106 +1,342 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Security Report</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PivotRaid - Threat Assessment Report</title>
+    <style>
+        :root {
+            --bg-main: #0b0d16;
+            --bg-card: #121625;
+            --bg-card-header: #1b2035;
+            --border-color: #222943;
+            --text-primary: #e3e6eb;
+            --text-secondary: #8592a6;
+            --accent-cyber: #00ffcc;
+            --color-critical: #ff3355;
+            --color-high: #ff9f1a;
+            --color-medium: #ffd32a;
+            --color-low: #05c46b;
+        }
 
-<style>
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        background: #f5f7fa;
-        margin: 0;
-    }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+        }
 
-    .container {
-        max-width: 1000px;
-        margin: 40px auto;
-        padding: 20px;
-    }
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
 
-    h1 {
-        font-size: 28px;
-        margin-bottom: 5px;
-    }
+        header {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
 
-    h2 {
-        margin-top: 30px;
-        border-bottom: 1px solid #e0e0e0;
-        padding-bottom: 5px;
-    }
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 0 0 5px 0;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff, var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-    .card {
-        background: white;
-        border-radius: 10px;
-        padding: 20px;
-        margin-top: 20px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
+        h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-cyber);
+            margin: 0 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    .badge {
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 12px;
-        font-weight: bold;
-    }
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
 
-    .critical { background: #ffe5e5; color: #c0392b; }
-    .high { background: #fff4e5; color: #d35400; }
-    .medium { background: #fffbe5; color: #b7950b; }
-    .low { background: #eafaf1; color: #27ae60; }
+        .badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            display: inline-block;
+        }
 
-    ul {
-        padding-left: 20px;
-    }
+        .badge.critical { background-color: rgba(255, 51, 85, 0.15); color: var(--color-critical); border: 1px solid var(--color-critical); }
+        .badge.high { background-color: rgba(255, 159, 26, 0.15); color: var(--color-high); border: 1px solid var(--color-high); }
+        .badge.medium { background-color: rgba(255, 211, 42, 0.15); color: var(--color-medium); border: 1px solid var(--color-medium); }
+        .badge.low { background-color: rgba(5, 196, 107, 0.15); color: var(--color-low); border: 1px solid var(--color-low); }
 
-    li {
-        margin-bottom: 5px;
-    }
+        ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
 
-    .service-title {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+        li {
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
 
-    .muted {
-        color: #777;
-        font-size: 13px;
-    }
-</style>
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
 
+        .service-title-text {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+            color: #ffffff;
+        }
+
+        .muted {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .meta-grid {
+            display: flex;
+            gap: 40px;
+            margin-top: 15px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .vuln-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .vuln-table th {
+            background-color: var(--bg-card-header);
+            color: var(--accent-cyber);
+            text-align: left;
+            padding: 10px 15px;
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .vuln-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+        }
+
+        .vuln-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .no-graph {
+            padding: 40px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
 
-<h1>Security Assessment Report</h1>
-<div class="muted">Target: 192.168.109.136</div>
+    <header>
+        <div>
+            <h1>PivotRaid Threat Assessment</h1>
+            <div class="muted">Target System Core Profile: <strong>192.168.109.136</strong></div>
+        </div>
+        <div class="muted">Generated on 2026-05-05</div>
+    </header>
 
-<div class="card">
-<h2>Executive Summary</h2>
-<p>Highest Risk: <b>SMB</b> <span class="badge low">LOW</span> (35/100)</p>
-</div>
-
-<div class="card">
-<h2>Attack Path Graph</h2>
-<div>                        <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
-        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.5.0.min.js" integrity="sha256-fHbNLP+GlIXN+efbQec78UkemUz3NJp7UmfGxC1tNxs=" crossorigin="anonymous"></script>                <div id="931856bc-718b-4a70-9a28-a6fd2a15e46e" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("931856bc-718b-4a70-9a28-a6fd2a15e46e")) {                    Plotly.newPlot(                        "931856bc-718b-4a70-9a28-a6fd2a15e46e",                        [{"line":{"width":2},"mode":"lines","x":[],"y":[],"type":"scatter"},{"marker":{"size":18},"mode":"markers+text","text":["SMB"],"textposition":"top center","x":[1.0],"y":[0.0],"type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"margin":{"l":20,"r":20,"t":40,"b":20}},                        {"responsive": true}                    )                };            </script>        </div>
-</div>
-
-<h2>Service Analysis</h2>
-
-<div class="card">
-    <div class="service-title">
-        <h3>SMB (OPEN)</h3>
-        <span class="badge low">LOW</span>
+    <div class="card">
+        <h2>Executive Summary</h2>
+        <div class="meta-grid">
+            <div class="meta-item">
+                <span class="muted">Target Host IP</span>
+                <span class="meta-value">192.168.109.136</span>
+            </div>
+            <div class="meta-item">
+                <span class="muted">Primary Threat Vector</span>
+                <span class="meta-value" style="color: #ffffff">SMB</span>
+            </div>
+            <div class="meta-item">
+                <span class="muted">Highest Risk Score</span>
+                <span>
+                    <span class="badge low">
+                        LOW (20/100)
+                    </span>
+                </span>
+            </div>
+        </div>
     </div>
-    <div class="muted">Confidence: 15</div>
-<h4>Findings</h4><ul><li>[HIGH] SMB signing not required</li><li>[INFO] SMB dialect: SMB 3.0</li><li>[INFO] Null session login allowed</li><li>[INFO] Valid credentials: guest:</li><li>[INFO] Hidden shares: print$, IPC$</li><li>[MEDIUM] Weak credentials but limited access</li></ul><h4>Impact</h4><ul><li>Susceptible to SMB relay attacks</li></ul><h4>Attack Path</h4><ul><li>Use null session to enumerate users and shares</li><li>Attempt deeper access using discovered information</li></ul></div>
-<div class="card">
-    <div class="service-title">
-        <h3>FTP (CLOSED)</h3>
-        <span class="badge low">LOW</span>
+
+    <div class="card">
+        <h2>Interactive Threat Pathway</h2>
+        
+    <div id="attack-graph" style="width: 100%; height: 450px; background: #0b0d16; border-radius: 8px; border: 1px solid #1e2235; position: relative; overflow: hidden;"></div>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        const nodes = [{"id": "Attacker", "type": "origin", "label": "External Threat Actor"}, {"id": "SMB", "type": "service", "label": "SMB (Port 445)", "verdict": "LOW", "score": 20}];
+        const links = [{"source": "Attacker", "target": "SMB", "label": "Initial Access"}];
+
+        const width = document.getElementById('attack-graph').clientWidth;
+        const height = 450;
+
+        const svg = d3.select("#attack-graph")
+            .append("svg")
+            .attr("width", "100%")
+            .attr("height", height)
+            .attr("viewBox", `0 0 ${width} ${height}`);
+
+        // Defining Marker Arrowheads for Directional Edges
+        svg.append("defs").selectAll("marker")
+            .data(["arrow"])
+            .enter().append("marker")
+            .attr("id", d => d)
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 25)
+            .attr("refY", 0)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("fill", "#00ffcc")
+            .attr("d", "M0,-5L10,0L0,5");
+
+        const simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(120))
+            .force("charge", d3.forceManyBody().strength(-300))
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+        // Draw Links
+        const link = svg.append("g")
+            .selectAll("line")
+            .data(links)
+            .enter().append("line")
+            .attr("stroke", "#1e2438")
+            .attr("stroke-width", 2)
+            .attr("marker-end", "url(#arrow)");
+
+        // Add link text labels
+        const linkText = svg.append("g")
+            .selectAll("text")
+            .data(links)
+            .enter().append("text")
+            .attr("fill", "#5f6e85")
+            .attr("font-size", "9px")
+            .attr("text-anchor", "middle")
+            .text(d => d.label);
+
+        // Draw Nodes
+        const node = svg.append("g")
+            .selectAll("g")
+            .data(nodes)
+            .enter().append("g")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        // Color nodes based on type/threat
+        node.append("circle")
+            .attr("r", d => d.type === 'origin' ? 14 : 10)
+            .attr("fill", d => {
+                if (d.type === 'origin') return "#ff3366";
+                if (d.type === 'exploit') return "#ff9900";
+                return d.verdict === 'CRITICAL' ? '#ff3333' :
+                       d.verdict === 'HIGH' ? '#ff9900' : '#00ffcc';
+            })
+            .attr("stroke", "#0b0d16")
+            .attr("stroke-width", 2);
+
+        // Text Labels
+        node.append("text")
+            .attr("dx", 14)
+            .attr("dy", ".35em")
+            .attr("fill", "#e3e6eb")
+            .attr("font-size", "11px")
+            .attr("font-weight", d => d.type === 'origin' ? 'bold' : 'normal')
+            .text(d => d.id);
+
+        simulation.on("tick", () => {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            linkText
+                .attr("x", d => (d.source.x + d.target.x) / 2)
+                .attr("y", d => (d.source.y + d.target.y) / 2 - 5);
+
+            node
+                .attr("transform", d => `translate(${d.x}, ${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+    </script>
+    
     </div>
-    <div class="muted">Confidence: 0</div>
-<h4>Findings</h4><ul><li>[INFO] FTP not accessible</li></ul></div></div></body></html>
+
+    <h2>Exploitation Interface Analysis</h2>
+
+    <div class="card">
+        <div class="service-header">
+            <h3 class="service-title-text">SMB on Port 445 (OPEN)</h3>
+            <span class="badge low">LOW</span>
+        </div>
+        <div class="muted" style="margin-bottom: 15px;">Confidence Score: <strong>10/100</strong></div>
+<h4 style="font-size: 13px; color: var(--accent-cyber); margin-top: 15px;">Interface Enumeration</h4><ul><li>[HIGH] SMB signing not required</li><li>[INFO] Negotiated Dialect: SMB 3.0</li><li>[INFO] Null session connection accepted.</li><li>[INFO] Administrative Hidden Shares ($): print$, IPC$</li></ul><h4 style="font-size: 13px; color: var(--accent-cyber); margin-top: 15px;">Local Exposure Impact</h4><ul><li>Susceptible to local SMB authentication relaying attacks (e.g., ntlmrelayx).</li></ul><h4 style="font-size: 13px; color: var(--accent-cyber); margin-top: 15px;">Local Attack Path Progression</h4><ol style="padding-left: 20px; line-height: 1.6;"><li style='margin-bottom: 5px;'>Attempt to brute force local or active directory accounts.</li><li style='margin-bottom: 5px;'>Verify access controls across identified shares.</li></ol></div>
+    <div class="card">
+        <div class="service-header">
+            <h3 class="service-title-text">FTP on Port 21 (CLOSED)</h3>
+            <span class="badge low"></span>
+        </div>
+        <div class="muted" style="margin-bottom: 15px;">Confidence Score: <strong>0/100</strong></div>
+</div></div></body></html>
