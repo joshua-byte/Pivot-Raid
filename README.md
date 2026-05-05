@@ -1,4 +1,4 @@
-# PivotRaid 🎯
+# PivotRaid
 
 [![Language](https://img.shields.io/badge/Language-Python%203-blue.svg)](https://www.python.org/)
 [![Focus](https://img.shields.io/badge/Focus-Infrastructure%20VAPT-red.svg)]()
